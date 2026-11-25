@@ -1,0 +1,20 @@
+{
+  "name": "ツケ回し",
+  "short_name": "ツケ回し",
+  "description": "コンカフェの付け回しボード",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#fff4f8",
+  "theme_color": "#ff4f8b",
+  "lang": "ja",
+  "icons": [
+    {
+      "src": "apple-touch-icon.png",
+      "sizes": "180x180",
+      "type": "image/png",
+      "purpose": "any"
+    }
+  ]
+}
