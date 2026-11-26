@@ -4,85 +4,24 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
     <meta name="theme-color" content="#ff4f8b" />
+    <meta name="mobile-web-app-capable" content="yes" />
     <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="default" />
     <meta name="apple-mobile-web-app-title" content="ツケ回し" />
-    <title>ツケ回し</title>
-    <link rel="icon" href="favicon.svg" type="image/svg+xml" />
-    <link rel="apple-touch-icon" href="apple-touch-icon.png" />
-    <link rel="manifest" href="manifest.webmanifest" />
+    <title>ツケ回しボード</title>
+    <link rel="icon" href="/concafe-web/favicon.svg" type="image/svg+xml" />
+    <link rel="apple-touch-icon" href="/concafe-web/apple-touch-icon.png" />
+    <link rel="manifest" href="/concafe-web/manifest.webmanifest" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;700&family=M+PLUS+Rounded+1c:wght@500;700;800&family=Shippori+Mincho:wght@500;600;700&display=swap" rel="stylesheet" />
-    <style id="login-css">
-      body.is-login { margin: 0; min-height: 100dvh; display: grid; place-items: center; background: #fff4f8; color: #3b1024; font-family: "Hiragino Sans", sans-serif; }
-      #login { width: min(420px, calc(100% - 32px)); background: white; border-radius: 18px; padding: 24px; display: grid; gap: 12px; }
-      #login h1 { margin: 0; font-size: 1.4rem; }
-      #login label { display: grid; gap: 6px; }
-      #login input { font-size: 16px; padding: 12px; border-radius: 12px; border: 1px solid #f3c1d4; }
-      #login button { font-size: 16px; padding: 12px; border: 0; border-radius: 999px; background: #ff4f8b; color: white; }
-      #login .error { color: #9f1239; margin: 0; }
-    </style>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;700&family=M+PLUS+Rounded+1c:wght@500;700;800&family=Shippori+Mincho:wght@500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <script type="module" crossorigin src="/concafe-web/assets/index-C9jdLbmE.js"></script>
+    <link rel="stylesheet" crossorigin href="/concafe-web/assets/index-B_kFwJRb.css">
   </head>
-  <body class="is-login">
-    <form id="login">
-      <p>ツケ回し</p>
-      <h1>自分のメールで入る</h1>
-      <p id="email"></p>
-      <label>パスワード<input id="password" type="password" autocomplete="current-password" required /></label>
-      <p class="error" id="error"></p>
-      <button type="submit">入る</button>
-    </form>
-    <div id="root" hidden></div>
-    <script type="module">
-      import { createClient } from 'https://esm.sh/@supabase/supabase-js@2.81.1'
-      const SUPABASE = 'https://uibwfaxdddlauujfhgge.supabase.co'
-      const KEY = 'sb_publishable_U9qA0lrpcriyT1nsnIuX6g_NKpMzLfP'
-      const EMAIL = 'ankle0614@gmail.com'
-      const supabase = createClient(SUPABASE, KEY, { auth: { persistSession: true, autoRefreshToken: true, detectSessionInUrl: false } })
-      const form = document.querySelector('#login')
-      const error = document.querySelector('#error')
-      document.querySelector('#email').textContent = EMAIL
-
-      function clearLogin() {
-        document.body.classList.remove('is-login')
-        document.querySelector('#login-css')?.remove()
-        form.remove()
-      }
-
-      async function openApp(session) {
-        const headers = { apikey: KEY, authorization: `Bearer ${session.access_token}` }
-        const [cssRes, jsRes] = await Promise.all([
-          fetch(`${SUPABASE}/functions/v1/web/app.css`, { headers }),
-          fetch(`${SUPABASE}/functions/v1/web/app.js`, { headers }),
-        ])
-        if (!cssRes.ok || !jsRes.ok) {
-          error.textContent = '入れませんでした。もう一度パスワードを確認してください。'
-          return
-        }
-        const style = document.createElement('style')
-        style.textContent = await cssRes.text()
-        document.head.append(style)
-        clearLogin()
-        document.querySelector('#root').hidden = false
-        const blob = new Blob([await jsRes.text()], { type: 'text/javascript' })
-        await import(URL.createObjectURL(blob))
-      }
-
-      const existing = await supabase.auth.getSession()
-      if (existing.data.session?.user.email?.toLowerCase() === EMAIL) await openApp(existing.data.session)
-
-      form.addEventListener('submit', async (event) => {
-        event.preventDefault()
-        error.textContent = ''
-        const password = document.querySelector('#password').value
-        const { data, error: signError } = await supabase.auth.signInWithPassword({ email: EMAIL, password })
-        if (signError || data.session?.user.email?.toLowerCase() !== EMAIL) {
-          await supabase.auth.signOut()
-          error.textContent = 'メールアドレスかパスワードが違います。'
-          return
-        }
-        await openApp(data.session)
-      })
-    </script>
+  <body>
+    <div id="root"></div>
   </body>
 </html>
